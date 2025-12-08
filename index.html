@@ -143,6 +143,8 @@ async function openPost(pid){
   history.pushState(null,null,`#post?post=${pid}`);
   go();
 }
+  window.openPost = openPost;
+  
 async function showPostDetail(){
   const id = qsVal('post');
   app.innerHTML='<div class="loader">Chargement…</div>';
