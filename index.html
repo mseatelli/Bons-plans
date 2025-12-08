@@ -112,16 +112,16 @@ async function showThemes(){
 async function showPosts(){
   const id = qsVal('theme');
   app.innerHTML='<div class="loader">Chargement…</div>';
-  const [{data:theme},{data:posts}] = await Promise.all([
+  const [{data:theme, error:themeErr},{data:posts, error:postsErr}] = await Promise.all([
     sb.from('themes').select('*').eq('id',id).single(),
     sb.from('posts').select('*').eq('theme_id',id).order('created_at',{ascending:false})
   ]);
-  if(theme.error){app.innerHTML=`Erreur thème : ${theme.error.message}`;return;}
-  if(posts.error){app.innerHTML=`Erreur posts : ${posts.error.message}`;return;}
+  if(themeErr || !theme){ app.innerHTML=`Thème introuvable`; return; }
+  if(postsErr)           { app.innerHTML=`Erreur posts : ${postsErr.message}`; return; }
   app.innerHTML = `
-    <h1>${theme.data.name}</h1>
+    <h1>${theme.name}</h1>
     <button class="actions" onclick="openCreateForm('${id}')">Créer un post</button>
-    <div class="list">${posts.data.map(p=>card(p)).join('')}</div>`;
+    <div class="list">${posts.map(p=>card(p)).join('')}</div>`;
 }
 function card(p){
   const stars='★'.repeat(p.rating||0)+'☆'.repeat(5-(p.rating||0));
