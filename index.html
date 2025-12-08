@@ -1,0 +1,431 @@
+<!doctype html>
+
+<html lang="fr">
+
+<head>
+
+  <meta charset="utf-8"/>
+
+  <title>SupaThemes</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <style>
+
+    :root{--accent:#ff0050;font-family:system-ui,Arial;background:#f6f6f6;margin:0;padding:0}
+
+    header{background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.05);padding:.6rem 1rem;display:flex;gap:1rem;align-items:center}
+
+    header a{text-decoration:none;color:#000;font-weight:600}
+
+    #app{padding:1.2rem;max-width:900px;margin:auto;min-height:70vh}
+
+    .list{display:flex;flex-direction:column;gap:1rem}
+
+    .card{background:#fff;border-radius:8px;padding:1rem;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+
+    .gallery{display:flex;gap:.5rem;overflow-x:auto;margin:.8rem 0}
+
+    .gallery img{height:140px;border-radius:4px;object-fit:cover}
+
+    .actions{margin-top:.8rem;display:flex;gap:.6rem;flex-wrap:wrap}
+
+    .actions button{background:var(--accent);color:#fff;border:none;padding:.4rem .8rem;border-radius:4px;cursor:pointer}
+
+    textarea,input{width:100%;margin-top:.5rem}
+
+    .hidden{display:none}
+
+    .loader{text-align:center;margin-top:2rem}
+
+  </style>
+
+</head>
+
+<body>
+
+<header>
+
+  <a href="#" data-route="home">Accueil</a>
+
+  <a href="#" data-route="themes">Thèmes</a>
+
+</header>
+
+<main id="app"></main>
+
+ 
+
+<script type="module">
+
+/* ---------------------------------------------------------
+
+   0) CLIENT SUPABASE
+
+----------------------------------------------------------*/
+
+import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js';
+
+const sb = createClient(
+
+  'https://nqjrnftfkxxtyjlrdcoa.supabase.co',
+
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xanJuZnRma3h4dHlqbHJkY29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExNDk0NDUsImV4cCI6MjA3NjcyNTQ0NX0.k7vGzhpOUNH-jjwo1pXcTSffxPG8U7ZIljcWb0j7k0k'
+
+);
+
+ 
+
+/* ---------------------------------------------------------
+
+   1) ROUTEUR
+
+----------------------------------------------------------*/
+
+const app = document.getElementById('app');
+
+window.addEventListener('click', e => {
+
+  if (e.target.dataset.route) {
+
+    e.preventDefault();
+
+    history.pushState(null, null, '#'+e.target.dataset.route);
+
+    go();
+
+  }
+
+});
+
+window.addEventListener('popstate', go);
+
+function go(){
+
+  const [page,qs] = location.hash.slice(1).split('?');
+
+  routes[page] ? routes[page]() : routes.home();
+
+}
+
+function qsVal(key){ return new URLSearchParams(location.hash.split('?')[1]).get(key) }
+
+ 
+
+/* ---------------------------------------------------------
+
+   2) VUES + APPELS SUPABASE
+
+----------------------------------------------------------*/
+
+const routes = {
+
+  home:   () => showHome(),
+
+  themes: () => showThemes(),
+
+  posts:  () => showPosts(),
+
+  post:   () => showPostDetail()
+
+};
+
+ 
+
+async function showHome(){
+
+  app.innerHTML = `
+
+    <h1>Bienvenue</h1>
+
+    <p>Parcourez les thèmes et les posts de la communauté.</p>
+
+    <a href="#" data-route="themes">Voir tous les thèmes</a>`;
+
+}
+
+async function showThemes(){
+
+  app.innerHTML='<div class="loader">Chargement…</div>';
+
+  const {data,error} = await sb.from('themes').select('*').order('name');
+
+  if(error){app.innerHTML=`Erreur : ${error.message}`;return;}
+
+  app.innerHTML = `<h1>Choisissez un thème</h1><div class="list">${data.map(t=>`
+
+    <a class="card" href="#posts?theme=${t.id}" data-route="posts">
+
+      <h3>${t.name}</h3>
+
+    </a>`).join('')}</div>`;
+
+}
+
+async function showPosts(){
+
+  const id = qsVal('theme');
+
+  app.innerHTML='<div class="loader">Chargement…</div>';
+
+  const [{data:themes},{data:posts}] = await Promise.all([
+
+    sb.from('themes').select('*').eq('id',id).single(),
+
+    sb.from('posts').select('*').eq('theme_id',id).order('created_at',{ascending:false})
+
+  ]);
+
+  if(themes.error){app.innerHTML=`Erreur thème : ${themes.error.message}`;return;}
+
+  if(posts.error){app.innerHTML=`Erreur posts : ${posts.error.message}`;return;}
+
+  app.innerHTML = `
+
+    <h1>${themes.data.name}</h1>
+
+    <button class="actions" onclick="openCreateForm('${id}')">Créer un post</button>
+
+    <div class="list">${posts.data.map(p=>card(p)).join('')}</div>`;
+
+}
+
+function card(p){
+
+  const stars='★'.repeat(p.rating||0)+'☆'.repeat(5-(p.rating||0));
+
+  const tel=(p.author_phone||'').slice(-4).padStart(p.author_phone.length,'*');
+
+  return `
+
+    <div class="card">
+
+      <h3>${p.title}</h3>
+
+      <p>${p.content||''}</p>
+
+      ${(p.photos||[]).length?`<div class="gallery">${p.photos.map(u=>`<img src="${u}" alt="">`).join('')}</div>`:''}
+
+      <div class="meta">Par <strong>${tel}</strong> – ${new Date(p.created_at).toLocaleString('fr-FR')}
+
+        <span class="rating" style=float:right>${stars}</span>
+
+      </div>
+
+      <div class="actions">
+
+        <button onclick="openPost('${p.id}')">Voir / Modifier</button>
+
+      </div>
+
+    </div>`;
+
+}
+
+async function openPost(pid){
+
+  history.pushState(null,null,`#post?post=${pid}`);
+
+  go();
+
+}
+
+async function showPostDetail(){
+
+  const id = qsVal('post');
+
+  app.innerHTML='<div class="loader">Chargement…</div>';
+
+  const {data,error} = await sb.from('posts').select('*').eq('id',id).single();
+
+  if(error){app.innerHTML=`Erreur : ${error.message}`;return;}
+
+  const shareText = `Regarde ce post : ${data.title} – ${data.content||''} → ${window.location.origin}${window.location.hash}`;
+
+  app.innerHTML = `
+
+    <h1>${data.title}</h1>
+
+    <div class="card">
+
+      <p>${data.content||''}</p>
+
+      ${(data.photos||[]).length?`<div class="gallery">${data.photos.map(u=>`<img src="${u}" alt="">`).join('')}</div>`:''}
+
+      <div class="meta">Note : ${'★'.repeat(data.rating)}${'☆'.repeat(5-data.rating)}</div>
+
+      <div class="actions">
+
+        <button onclick="openEditForm('${data.id}')">Modifier</button>
+
+        <button onclick="delPost('${data.id}')">Supprimer</button>
+
+        <button onclick="sharePost('${shareText}')">Partager</button>
+
+      </div>
+
+    </div>`;
+
+}
+
+ 
+
+/* ---------------------------------------------------------
+
+   3) CRUD + PARTAGE
+
+----------------------------------------------------------*/
+
+window.openCreateForm = (themeId) => {
+
+  app.innerHTML=`
+
+    <h1>Nouveau post</h1>
+
+    <div class="card">
+
+      <input id="title" placeholder="Titre">
+
+      <textarea id="content" placeholder="Contenu"></textarea>
+
+      <input id="photos" placeholder="URLs images (séparées par une virgule)">
+
+      <input id="rating" type="number" min="1" max="5" placeholder="Note /5">
+
+      <input id="phone" placeholder="Votre téléphone">
+
+      <div class="actions">
+
+        <button onclick="createPost('${themeId}')">Publier</button>
+
+        <button onclick="history.back()">Annuler</button>
+
+      </div>
+
+    </div>`;
+
+};
+
+window.createPost = async (themeId) => {
+
+  const payload = {
+
+    theme_id: themeId,
+
+    title: document.getElementById('title').value,
+
+    content: document.getElementById('content').value,
+
+    photos: document.getElementById('photos').value.split(',').map(x=>x.trim()).filter(Boolean),
+
+    rating: parseInt(document.getElementById('rating').value)||null,
+
+    author_phone: document.getElementById('phone').value
+
+  };
+
+  const {error} = await sb.from('posts').insert(payload);
+
+  if(error){alert(error.message);return;}
+
+  history.back(); // revient à la liste
+
+};
+
+window.openEditForm = (id) => {
+
+  sb.from('posts').select('*').eq('id',id).single().then(({data,error})=>{
+
+    if(error){alert(error.message);return;}
+
+    app.innerHTML=`
+
+      <h1>Modifier le post</h1>
+
+      <div class="card">
+
+        <input id="title" value="${data.title}">
+
+        <textarea id="content">${data.content||''}</textarea>
+
+        <input id="photos" value="${(data.photos||[]).join(', ')}">
+
+        <input id="rating" type="number" min="1" max="5" value="${data.rating||''}" placeholder="Note /5">
+
+        <input id="phone" value="${data.author_phone}">
+
+        <div class="actions">
+
+          <button onclick="updatePost('${id}')">Sauver</button>
+
+          <button onclick="history.back()">Annuler</button>
+
+        </div>
+
+      </div>`;
+
+  });
+
+};
+
+window.updatePost = async (id) => {
+
+  const payload = {
+
+    title: document.getElementById('title').value,
+
+    content: document.getElementById('content').value,
+
+    photos: document.getElementById('photos').value.split(',').map(x=>x.trim()).filter(Boolean),
+
+    rating: parseInt(document.getElementById('rating').value)||null,
+
+    author_phone: document.getElementById('phone').value,
+
+    updated_at: new Date().toISOString()
+
+  };
+
+  const {error} = await sb.from('posts').update(payload).eq('id',id);
+
+  if(error){alert(error.message);return;}
+
+  history.back();
+
+};
+
+window.delPost = async (id) => {
+
+  if(!confirm('Supprimer définitivement ?')) return;
+
+  const {error} = await sb.from('posts').delete().eq('id',id);
+
+  if(error){alert(error.message);return;}
+
+  history.back();
+
+};
+
+window.sharePost = (text) => {
+
+  if(navigator.share) navigator.share({title:'Partage', text});
+
+  else {navigator.clipboard.writeText(text); alert('Lien copié !');}
+
+};
+
+ 
+
+/* ---------------------------------------------------------
+
+   4) LANCEMENT
+
+----------------------------------------------------------*/
+
+go();
+
+</script>
+
+</body>
+
+</html>
