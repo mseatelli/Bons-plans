@@ -152,7 +152,7 @@ async function showPostDetail(){
   if(error){app.innerHTML=`Erreur : ${error.message}`;return;}
 
   // message propre, sans apostrophes cassées
-  const shareLines = [
+  const shareText = [
   'Nouvelle recommandation',
   `📍 ${data.title}`,
   `💬 ${data.content || ''}`,
@@ -163,7 +163,6 @@ const safeText = shareText.replace(/'/g, "\\'");
 
 // 2. échapper les apostrophes pour l’attribut HTML
 const safeText = shareText.replace(/'/g, "\\'");
-
 
   app.innerHTML = `
     <h1>${data.title}</h1>
