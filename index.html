@@ -152,13 +152,18 @@ async function showPostDetail(){
   if(error){app.innerHTML=`Erreur : ${error.message}`;return;}
 
   // message propre, sans apostrophes cassées
-  const shareText = [
-    'Nouvelle recommandation',
-    '📍 ' + data.title,
-    '💬 ' + (data.content || ''),
-    '⭐ Note : ' + data.rating + '/5',
-    '🔗 ' + window.location.origin + window.location.hash
-  ].join('\n');
+  const shareLines = [
+  'Nouvelle recommandation',
+  `📍 ${data.title}`,
+  `💬 ${data.content || ''}`,
+  `⭐ Note : ${data.rating}/5`,
+  `🔗 ${window.location.origin}${window.location.hash}`
+];
+const shareText = shareLines.join('\n');
+
+// 2. échapper les apostrophes pour l’attribut HTML
+const safeText = shareText.replace(/'/g, "\\'");
+
 
   app.innerHTML = `
     <h1>${data.title}</h1>
@@ -169,7 +174,7 @@ async function showPostDetail(){
       <div class="actions">
         <button onclick="openEditForm('${data.id}')">Modifier</button>
         <button onclick="delPost('${data.id}')">Supprimer</button>
-        <button onclick="sharePost('${shareText}')">Partager</button>
+        <button onclick="sharePost('${safeText}')">Partager</button>
       </div>
     </div>`;
 }
