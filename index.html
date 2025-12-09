@@ -150,7 +150,16 @@ async function showPostDetail(){
   app.innerHTML='<div class="loader">Chargement…</div>';
   const {data,error} = await sb.from('posts').select('*').eq('id',id).single();
   if(error){app.innerHTML=`Erreur : ${error.message}`;return;}
-  const shareText = `Bons Plans – La communauté des amis\n${data.title}\n${data.content||''}\n${window.location.origin}${window.location.hash}`;
+
+  // ↓↓↓ NOUVEAU MESSAGE PRÉ-REMPLI ↓↓↓
+  const shareText =
+    `Nouvelle recommandation\n` +
+    `📍 ${data.title}\n` +
+    `💬 ${data.content || ''}\n` +
+    `⭐ Note : ${data.rating}/5\n` +
+    `🔗 ${window.location.origin}${window.location.hash}`;
+
+  // suite inchangée
   app.innerHTML = `
     <h1>${data.title}</h1>
     <div class="card">
@@ -160,11 +169,10 @@ async function showPostDetail(){
       <div class="actions">
         <button onclick="openEditForm('${data.id}')">Modifier</button>
         <button onclick="delPost('${data.id}')">Supprimer</button>
-        <button onclick="sharePost('LE-TEXTE-A-PARTAGER')">Partager</button>
+        <button onclick="sharePost('${shareText}')">Partager</button>
       </div>
     </div>`;
 }
-
 /* -------------- CRUD -------------- */
 window.openCreateForm = (themeId) => {
   app.innerHTML=`
