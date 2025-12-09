@@ -235,6 +235,7 @@ window.sharePost = (text) => {
   if(navigator.share) navigator.share({title:'Bons Plans – La communauté des amis', text});
   else {navigator.clipboard.writeText(text); alert('Lien copié !');}
 };
+  window.sharePost = sharePost;
 
 /* -------------- INITIAL -------------- */
 go();
