@@ -151,17 +151,18 @@ async function showPostDetail(){
   const {data,error} = await sb.from('posts').select('*').eq('id',id).single();
   if(error){app.innerHTML=`Erreur : ${error.message}`;return;}
 
-  // message propre, sans apostrophes cassées
+  // texte de partage propre
   const shareLines = [
-  'Nouvelle recommandation',
-  `📍 ${data.title}`,
-  `💬 ${data.content || ''}`,
-  `⭐ Note : ${data.rating}/5`,
-  `🔗 ${window.location.origin}${window.location.hash}`
-];
-const shareText = shareLines.join('\\n');   // \\n  (double back-slash)
-const safeText  = shareText.replace(/'/g, "\\'"); // échapper les '
+    'Nouvelle recommandation',
+    `📍 ${data.title}`,
+    `💬 ${data.content || ''}`,
+    `⭐ Note : ${data.rating}/5`,
+    `🔗 ${window.location.origin}${window.location.hash}`
+  ];
+  const shareText = shareLines.join('\\n');
+  const safeText  = shareText.replace(/'/g, "\\'");
 
+  // injection HTML sans onclick
   app.innerHTML = `
     <h1>${data.title}</h1>
     <div class="card">
@@ -174,11 +175,13 @@ const safeText  = shareText.replace(/'/g, "\\'"); // échapper les '
         <button id="shareBtn">Partager</button>
       </div>
     </div>`;
-  document.getElementById('editBtn').onclick   = () => openEditForm(data.id);
-  document.getElementById('delBtn').onclick    = () => delPost(data.id);
-  document.getElementById('shareBtn').onclick  = () => sharePost(safeText);
+
+  // branchement des listeners APRÈS injection
+  document.getElementById('editBtn').onclick  = () => openEditForm(data.id);
+  document.getElementById('delBtn').onclick   = () => delPost(data.id);
+  document.getElementById('shareBtn').onclick = () => sharePost(safeText);
 }
-/* -------------- CRUD -------------- */
+  /* -------------- CRUD -------------- */
 window.openCreateForm = (themeId) => {
   app.innerHTML=`
     <h1>Nouveau post</h1>
