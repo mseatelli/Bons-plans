@@ -160,7 +160,7 @@ async function showPostDetail(){
   `🔗 ${window.location.origin}${window.location.hash}`
 ];
 const shareText = shareLines.join('\\n');   // \\n  (double back-slash)
-const safeText  = shareText.replace(/'/g, "\\'");
+const safeText  = shareText.replace(/'/g, "\\'"); // échapper les '
 
   app.innerHTML = `
     <h1>${data.title}</h1>
@@ -169,11 +169,14 @@ const safeText  = shareText.replace(/'/g, "\\'");
       ${(data.photos||[]).length?`<div class="gallery">${data.photos.map(u=>`<img src="${u}" alt="">`).join('')}</div>`:''}
       <div class="meta">Note : ${'★'.repeat(data.rating)}${'☆'.repeat(5-data.rating)}</div>
       <div class="actions">
-        <button onclick="openEditForm('${data.id}')">Modifier</button>
-        <button onclick="delPost('${data.id}')">Supprimer</button>
-        <button onclick="sharePost('${safeText}')">Partager</button>
+        <button id="editBtn">Modifier</button>
+        <button id="delBtn">Supprimer</button>
+        <button id="shareBtn">Partager</button>
       </div>
     </div>`;
+  document.getElementById('editBtn').onclick   = () => openEditForm(data.id);
+  document.getElementById('delBtn').onclick    = () => delPost(data.id);
+  document.getElementById('shareBtn').onclick  = () => sharePost(safeText);
 }
 /* -------------- CRUD -------------- */
 window.openCreateForm = (themeId) => {
