@@ -256,5 +256,15 @@ window.sharePost = (text) => {
 /* -------------- INITIAL -------------- */
 go();
 </script>
+  <button id="themeToggle" title="Thème clair/sombre">🌓</button>
+<script>
+  const btn = document.getElementById('themeToggle');
+  btn.onclick = () => {
+    document.body.classList.toggle('dark');
+    btn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌓';
+  };
+</script>
+</body>
+</html>
 </body>
 </html>
