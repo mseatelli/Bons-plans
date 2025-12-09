@@ -153,11 +153,11 @@ async function showPostDetail(){
 
   // ↓↓↓ NOUVEAU MESSAGE PRÉ-REMPLI ↓↓↓
   const shareText =
-    `Nouvelle recommandation\n` +
-    `📍 ${data.title}\n` +
-    `💬 ${data.content || ''}\n` +
-    `⭐ Note : ${data.rating}/5\n` +
-    `🔗 ${window.location.origin}${window.location.hash}`;
+  'Nouvelle recommandation\\n' +
+  '📍 ' + data.title + '\\n' +
+  '💬 ' + (data.content || '').replace(/'/g, "\\'") + '\\n' +
+  '⭐ Note : ' + data.rating + '/5\\n' +
+  '🔗 ' + window.location.origin + window.location.hash;
 
   // suite inchangée
   app.innerHTML = `
