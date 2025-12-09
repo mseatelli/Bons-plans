@@ -151,15 +151,15 @@ async function showPostDetail(){
   const {data,error} = await sb.from('posts').select('*').eq('id',id).single();
   if(error){app.innerHTML=`Erreur : ${error.message}`;return;}
 
-  // ↓↓↓ NOUVEAU MESSAGE PRÉ-REMPLI ↓↓↓
-  const shareText =
-  'Nouvelle recommandation\\n' +
-  '📍 ' + data.title + '\\n' +
-  '💬 ' + (data.content || '').replace(/'/g, "\\'") + '\\n' +
-  '⭐ Note : ' + data.rating + '/5\\n' +
-  '🔗 ' + window.location.origin + window.location.hash;
+  // message propre, sans apostrophes cassées
+  const shareText = [
+    'Nouvelle recommandation',
+    '📍 ' + data.title,
+    '💬 ' + (data.content || ''),
+    '⭐ Note : ' + data.rating + '/5',
+    '🔗 ' + window.location.origin + window.location.hash
+  ].join('\n');
 
-  // suite inchangée
   app.innerHTML = `
     <h1>${data.title}</h1>
     <div class="card">
