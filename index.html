@@ -159,7 +159,7 @@ async function showPostDetail(){
   `⭐ Note : ${data.rating}/5`,
   `🔗 ${window.location.origin}${window.location.hash}`
 ];
-const shareText = shareLines.join('\n');
+const safeText = shareText.replace(/'/g, "\\'");
 
 // 2. échapper les apostrophes pour l’attribut HTML
 const safeText = shareText.replace(/'/g, "\\'");
