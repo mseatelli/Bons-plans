@@ -59,6 +59,11 @@ button:active{transform:scale(.97)}
 /* ====== 9. POUCE LEVÉ QUI S'AGITE ====== */
 @keyframes thumbsUp{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
 #app::after{content:'👍';position:fixed;bottom:5rem;right:1.2rem;font-size:2rem;animation:thumbsUp 1.2s ease-in-out infinite;pointer-events:none;opacity:.6}
+
+/* ====== 10. CENTRAGE & ESPACEMENT ====== */
+#app{width:90%;max-width:900px;margin:auto;padding:1.2rem 0}
+.list{display:flex;flex-direction:column;gap:1.2rem}
+.card{max-width:600px;margin:0 auto}
 </style>
 </head>
 <body>
