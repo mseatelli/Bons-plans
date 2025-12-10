@@ -235,11 +235,10 @@ window.openCreateForm = (themeId) => {
       <input id="title" placeholder="Titre">
       <textarea id="content" placeholder="Contenu"></textarea>
       <input id="rating" type="number" min="1" max="5" placeholder="Note /5">
-      <input id="phone" placeholder="Votre téléphone">
-      <div class="actions">
+        <div class="actions">
         <button onclick="createPost('${themeId}')">Publier</button>
         <button onclick="history.back()">Annuler</button>
-      </div>
+    </div>
     </div>`;
 };
 window.createPost = async (themeId) => {
@@ -249,8 +248,7 @@ window.createPost = async (themeId) => {
     content: document.getElementById('content').value,
     photos: [],
     rating: parseInt(document.getElementById('rating').value)||null,
-    author_phone: document.getElementById('phone').value
-  };
+ };
   const {error} = await sb.from('posts').insert(payload);
   if(error){alert(error.message);return;}
   history.back();
@@ -264,7 +262,6 @@ window.openEditForm = (id) => {
         <input id="title" value="${data.title}">
         <textarea id="content">${data.content||''}</textarea>
         <input id="rating" type="number" min="1" max="5" value="${data.rating||''}" placeholder="Note /5">
-        <input id="phone" value="${data.author_phone}">
         <div class="actions">
           <button onclick="updatePost('${id}')">Sauver</button>
           <button onclick="history.back()">Annuler</button>
