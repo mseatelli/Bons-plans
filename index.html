@@ -284,7 +284,6 @@ window.updatePost = async (id) => {
     title: document.getElementById('title').value,
     content: document.getElementById('content').value,
     rating: parseInt(document.getElementById('rating').value)||null,
-    author_phone: document.getElementById('phone').value,
     updated_at: new Date().toISOString()
   };
   const {error} = await sb.from('posts').update(payload).eq('id',id);
