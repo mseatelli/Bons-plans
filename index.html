@@ -225,7 +225,8 @@ async function showPostDetail(){
         <button id="editBtn">Modifier</button>
         <button id="delBtn">Supprimer</button>
         <button id="shareBtn">Partager</button>
-      </div>
+        <button class="quitBtn" onclick="history.pushState(null,null,'#home');go()">Quitter</button>
+    </div>
     </div>`;
 
   // branchement des listeners APRÈS injection
@@ -247,6 +248,7 @@ window.openCreateForm = (themeId) => {
         <div class="actions">
         <button onclick="createPost('${themeId}')">Publier</button>
         <button onclick="history.back()">Annuler</button>
+        <button class="quitBtn" onclick="history.pushState(null,null,'#home');go()">Quitter</button>
     </div>
     </div>`;
 };
