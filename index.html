@@ -215,14 +215,13 @@ async function showPostDetail(){
       </div>
     </div>`;
   // branchement des listeners APRÈS injection
+   // on attend que le HTML soit dans le DOM
+requestAnimationFrame(() => {
   document.getElementById('editBtn').onclick  = () => openEditForm(data.id);
   document.getElementById('delBtn').onclick   = () => delPost(data.id);
   document.getElementById('shareBtn').onclick = () => sharePost(safeText);
-}
-// on branche les listeners APRÈS injection
-document.getElementById('editBtn').onclick   = () => openEditForm(data.id);
-document.getElementById('delBtn').onclick    = () => delPost(data.id);
-document.getElementById('shareBtn').onclick  = () => sharePost(safeText);
+});
+
 
 /* -------------- CRUD -------------- */
 window.openCreateForm = (themeId) => {
