@@ -234,7 +234,6 @@ window.openCreateForm = (themeId) => {
     <div class="card">
       <input id="title" placeholder="Titre">
       <textarea id="content" placeholder="Contenu"></textarea>
-      <input id="photos" placeholder="URLs images (séparées par une virgule)">
       <input id="rating" type="number" min="1" max="5" placeholder="Note /5">
       <input id="phone" placeholder="Votre téléphone">
       <div class="actions">
@@ -248,7 +247,7 @@ window.createPost = async (themeId) => {
     theme_id: themeId,
     title: document.getElementById('title').value,
     content: document.getElementById('content').value,
-    photos: document.getElementById('photos').value.split(',').map(x=>x.trim()).filter(Boolean),
+    photos: [],
     rating: parseInt(document.getElementById('rating').value)||null,
     author_phone: document.getElementById('phone').value
   };
@@ -264,7 +263,6 @@ window.openEditForm = (id) => {
       <div class="card">
         <input id="title" value="${data.title}">
         <textarea id="content">${data.content||''}</textarea>
-        <input id="photos" value="${(data.photos||[]).join(', ')}">
         <input id="rating" type="number" min="1" max="5" value="${data.rating||''}" placeholder="Note /5">
         <input id="phone" value="${data.author_phone}">
         <div class="actions">
