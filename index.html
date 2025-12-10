@@ -176,13 +176,13 @@ async function showPosts(){
     <div class="list">${posts.map(p=>card(p)).join('')}</div>`;
 }
 function card(p){
-  const stars='★'.repeat(p.rating||0)+'☆'.repeat(5-(p.rating||0));
+  const stars='★'.repeat(p.rating)+'☆'.repeat(5-p.rating);
   return `
     <div class="card">
       <h3>${p.title}</h3>
       <p>${p.content||''}</p>
       ${(p.photos||[]).length?`<div class="gallery">${p.photos.map(u=>`<img src="${u}" alt="">`).join('')}</div>`:''}
-      <div class="meta">Par <strong>${tel}</strong> – ${new Date(p.created_at).toLocaleString('fr-FR')}
+      <div class="meta">${new Date(p.created_at).toLocaleString('fr-FR')}
         <span class="rating" style=float:right>${stars}</span>
       </div>
       <div class="actions">
