@@ -61,6 +61,7 @@ button:active{transform:scale(.97)}
 #app::after{content:'👍';position:fixed;bottom:5rem;right:1.2rem;font-size:2rem;animation:thumbsUp 1.2s ease-in-out infinite;pointer-events:none;opacity:.6}
 </style>
 </head>
+</script>
 <body>
 <header>
   <a href="#" data-route="home">Accueil</a>
@@ -74,7 +75,7 @@ let sb;
 try {
   const { createClient } = await import('https://cdn.skypack.dev/@supabase/supabase-js');
   sb = createClient(
-    'https://nqjrnftfkxxtyjlrdcoa.supabase.co',
+'https://nqjrnftfkxxtyjlrdcoa.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xanJuZnRma3h4dHlqbHJkY29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExNDk0NDUsImV4cCI6MjA3NjcyNTQ0NX0.k7vGzhpOUNH-jjwo1pXcTSffxPG8U7ZIljcWb0j7k0k'
   );
   // test rapide
@@ -161,8 +162,7 @@ async function showPosts(){
     <h1>${theme.name}</h1>
     <button class="actions" onclick="openCreateForm('${id}')">Créer un post</button>
     <div class="list">${posts.map(p=>card(p)).join('')}</div>`;
-}
-function card(p){
+}function card(p){
   const stars='★'.repeat(p.rating||0)+'☆'.repeat(5-(p.rating||0));
   const tel=(p.author_phone||'').slice(-4).padStart(p.author_phone.length,'*');
   return `
@@ -182,8 +182,8 @@ async function openPost(pid){
   history.pushState(null,null,`#post?post=${pid}`);
   go();
 }
-  window.openPost = openPost;
-  
+window.openPost = openPost;
+
 async function showPostDetail(){
   const id = qsVal('post');
   app.innerHTML='<div class="loader">Chargement…</div>';
@@ -214,13 +214,18 @@ async function showPostDetail(){
         <button id="shareBtn">Partager</button>
       </div>
     </div>`;
-
   // branchement des listeners APRÈS injection
   document.getElementById('editBtn').onclick  = () => openEditForm(data.id);
   document.getElementById('delBtn').onclick   = () => delPost(data.id);
   document.getElementById('shareBtn').onclick = () => sharePost(safeText);
 }
-  /* -------------- CRUD -------------- */
+// on branche les listeners APRÈS injection
+document.getElementById('editBtn').onclick   = () => openEditForm(data.id);
+document.getElementById('delBtn').onclick    = () => delPost(data.id);
+document.getElementById('shareBtn').onclick  = () => sharePost(safeText);
+}
+
+/* -------------- CRUD -------------- */
 window.openCreateForm = (themeId) => {
   app.innerHTML=`
     <h1>Nouveau post</h1>
@@ -290,12 +295,12 @@ window.sharePost = (text) => {
   if(navigator.share) navigator.share({title:'Bons Plans – La communauté des amis', text});
   else {navigator.clipboard.writeText(text); alert('Lien copié !');}
 };
-  window.sharePost = sharePost;
+window.sharePost = sharePost;
 
 /* -------------- INITIAL -------------- */
 go();
 </script>
-  <button id="themeToggle" title="Thème clair/sombre">🌓</button>
+<button id="themeToggle" title="Thème clair/sombre">🌓</button>
 <script>
   const btn = document.getElementById('themeToggle');
   btn.onclick = () => {
