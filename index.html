@@ -64,6 +64,11 @@ button:active{transform:scale(.97)}
 #app{width:90%;max-width:900px;margin:auto;padding:1.2rem 0}
 .list{display:flex;flex-direction:column;gap:1.2rem}
 .card{max-width:600px;margin:0 auto}
+
+/* ====== 11. CHAMPS DE SAISIE ====== */
+input,textarea{width:100%;padding:.6rem;border:1px solid #ccc;border-radius:var(--radius);font-family:var(--font);transition:border-color .2s}
+input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+input[type="text"]::placeholder,textarea::placeholder{color:#777;white-space:nowrap;overflow:visible}
 </style>
 </head>
 <body>
