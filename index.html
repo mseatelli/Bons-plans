@@ -177,7 +177,6 @@ async function showPosts(){
 }
 function card(p){
   const stars='★'.repeat(p.rating||0)+'☆'.repeat(5-(p.rating||0));
-  const tel=(p.author_phone||'').slice(-4).padStart(p.author_phone.length,'*');
   return `
     <div class="card">
       <h3>${p.title}</h3>
