@@ -314,13 +314,20 @@ window.sharePost = (text) => {
   else {navigator.clipboard.writeText(text); alert('Lien copié !');}
 };
 window.sharePost = sharePost;
-
+ 
 /* -------------- INITIAL -------------- */
 </script>
     <!-- ton gros script module (déjà présent) -->
   <script type="module">
     /* tout ton JS ici */
-    go();
+    
+   /* exposer les fonctions au global */
+window.openPost   = openPost;
+window.openCreateForm = openCreateForm;
+window.openEditForm = openEditForm;
+window.delPost    = delPost;
+window.sharePost  = sharePost;
+go();
   </script>
 
   <!-- BOUTON + SCRIPT DU TOGGLE (à ajouter) -->
