@@ -237,7 +237,7 @@ async function showPostDetail(){
 
   // branchement des listeners APRÈS injection
    // on attend que le HTML soit dans le DOM
-  requestAnimationFrame(() => {
+   requestAnimationFrame(() => {
     document.getElementById('editBtn').onclick  = () => openEditForm(data.id);
     document.getElementById('delBtn').onclick   = () => delPost(data.id);
     document.getElementById('shareBtn').onclick = () => sharePost(safeText);
@@ -245,19 +245,25 @@ async function showPostDetail(){
 }
 /* -------------- CRUD -------------- */
 window.openCreateForm = (themeId) => {
-  app.innerHTML=`
+  app.innerHTML = `
     <h1>Nouveau post</h1>
     <div class="card">
       <input id="title" placeholder="Titre">
       <textarea id="content" placeholder="Contenu"></textarea>
       <input id="rating" type="number" min="1" max="5" placeholder="Note /5">
-        <div class="actions">
-        <button onclick="createPost('${themeId}')">Publier</button>
+      <div class="actions">
+        <button id="createBtn" class="actions">Créer un post</button>
         <button onclick="history.back()">Annuler</button>
         <button class="quitBtn" onclick="history.pushState(null,null,'#home');go()">Quitter</button>
-    </div>
+      </div>
     </div>`;
+
+  // branchement APRÈS injection
+  requestAnimationFrame(() => {
+    document.getElementById('createBtn').onclick = () => createPost('${themeId}');
+  });
 };
+
 window.createPost = async (themeId) => {
   const payload = {
     theme_id: themeId,
