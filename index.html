@@ -82,6 +82,16 @@ button:active{transform:scale(.97)}
 <main id="app"></main>
 
 <script type="module">
+  // on masque le bandeau sur l’accueil + on centre la page
+function applyHomeStyle(){
+  if(location.hash===''||location.hash==='#home'){
+    document.body.classList.add('home');
+  }else{
+    document.body.classList.remove('home');
+  }
+}
+window.addEventListener('hashchange',applyHomeStyle);
+applyHomeStyle();   // applique dès le départ
 /* -------------- SUPABASE CLIENT ou MOCK -------------- */
 let sb;
 try {
@@ -226,6 +236,7 @@ async function showPostDetail(){
     </div>`;
 
   // branchement des listeners APRÈS injection
+   // on attend que le HTML soit dans le DOM
   requestAnimationFrame(() => {
     document.getElementById('editBtn').onclick  = () => openEditForm(data.id);
     document.getElementById('delBtn').onclick   = () => delPost(data.id);
