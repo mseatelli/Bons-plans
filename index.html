@@ -12,8 +12,8 @@
   --bg:#f6f8fa;
   --card:#ffffff;
   --text:#222;
-  --accent:#5b7cfa;        /* bleu doux */
-  --accent-hover:#4a68d8;
+  --accent:#ffb400;        /* jaune étoiles */
+  --accent-hover:#ff9800;
   --shadow:0 2px 8px rgba(0,0,0,.06);
   --radius:12px;
   --font:'Inter',system-ui,Arial,sans-serif;
@@ -32,48 +32,47 @@ body.dark{
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.5}
 
-/* ====== 4. HEADER & NAV ====== */
+/* ====== 4. HEADER (uniquement dans les pages posts) ====== */
+.no-header header{display:none}   /* on masque le header sur l’accueil */
 header{background:var(--card);box-shadow:var(--shadow);padding:.9rem 1.2rem;border-radius:0 0 var(--radius) var(--radius);display:flex;gap:1rem;align-items:center}
 header a{color:var(--text);text-decoration:none;font-weight:500;padding:.4rem .8rem;border-radius:var(--radius);transition:background .2s}
 header a:hover{background:rgba(0,0,0,.05)}
 body.dark header a:hover{background:rgba(255,255,255,.08)}
 
-/* ====== 5. CARTES ====== */
+/* ====== 5. PAGE D’ACCUEIL CENTRÉE ====== */
+.home-center{text-align:center;margin-top:3rem}
+.home-center h1{margin-bottom:.5rem}
+.home-center .thumb{font-size:3rem;animation:thumbsUp 1.2s ease-in-out infinite}
+@keyframes thumbsUp{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+body:not(.home) .home-thumb{display:none}   /* pouce uniquement sur l’accueil */
+
+/* ====== 6. CARTES ====== */
 .card{background:var(--card);border-radius:var(--radius);padding:1.2rem;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
 .card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.1)}
 body.dark .card:hover{box-shadow:0 4px 16px rgba(0,0,0,.4)}
 
-/* ====== 6. BOUTONS ====== */
+/* ====== 7. BOUTONS ====== */
 .actions button{background:var(--accent);color:#fff;border:none;padding:.5rem 1rem;border-radius:var(--radius);cursor:pointer;font-weight:500;transition:background .2s,transform .2s}
 .actions button:hover{background:var(--accent-hover);transform:scale(1.05)}
+.quitBtn{background:#888;margin-left:.5rem}
+.quitBtn:hover{background:#666}
 
-/* ====== 7. ANIMATIONS ====== */
+/* ====== 8. ANIMATIONS ====== */
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 #app{animation:fadeIn .6s ease-out}
 button:active{transform:scale(.97)}
 
-/* ====== 8. TOGGLE CLAIR / SOMBRE ====== */
+/* ====== 9. TOGGLE CLAIR / SOMBRE ====== */
 #themeToggle{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--card);border:1px solid var(--accent);color:var(--accent);width:3rem;height:3rem;border-radius:50%;cursor:pointer;font-size:1.4rem;box-shadow:var(--shadow);transition:background .3s,color .3s,transform .3s}
 #themeToggle:hover{transform:scale(1.1)}
-
-/* ====== 9. POUCE LEVÉ QUI S'AGITE ====== */
-@keyframes thumbsUp{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
-#app::after{content:'👍';position:fixed;bottom:5rem;right:1.2rem;font-size:2rem;animation:thumbsUp 1.2s ease-in-out infinite;pointer-events:none;opacity:.6}
 
 /* ====== 10. CENTRAGE & ESPACEMENT ====== */
 #app{width:90%;max-width:900px;margin:auto;padding:1.2rem 0}
 .list{display:flex;flex-direction:column;gap:1.2rem}
 .card{max-width:600px;margin:0 auto}
 
-/* ====== 11. CHAMPS DE SAISIE ====== */
-input,textarea{width:100%;padding:.6rem;border:1px solid #ccc;border-radius:var(--radius);font-family:var(--font);transition:border-color .2s}
-input:focus,textarea:focus{outline:none;border-color:var(--accent)}
-input[type="text"]::placeholder,textarea::placeholder{color:#777;white-space:nowrap;overflow:visible}
-
-/* ====== 12. BOUTON QUITTER ====== */
-.quitBtn{background:#888;color:#fff;border:none;padding:.5rem 1rem;border-radius:var(--radius);cursor:pointer;font-weight:500;transition:background .2s}
-.quitBtn:hover{background:#666}
-</style>
+/* ====== 11. ÉTOILES JAUNES PARTOUT ====== */
+.rating{color:var(--accent);font-size:1.2rem}</style>
 </head>
 <body>
 <header>
@@ -147,10 +146,14 @@ const routes = {
 };
 
 async function showHome(){
-  app.innerHTML = `
-    <h1>Bons Plans</h1>
-    <p>La communauté des amis</p>
-    <a href="#" data-route="themes">Explorer les thèmes</a>`;
+  document.body.classList.add('home');          // active le centrage + pouce
+  app.innerHTML=`
+    <div class="home-center">
+      <h1>Bons Plans</h1>
+      <p>La communauté des amis</p>
+      <span class="thumb">👍</span>
+      <a href="#" data-route="themes" class="card">Explorer les thèmes</a>
+    </div>`;
 }
 async function showThemes(){
   app.innerHTML='<div class="loader">Chargement…</div>';
@@ -180,20 +183,14 @@ function card(p){
   return `
     <div class="card">
       <h3>${p.title}</h3>
-      <p>${p.content||''}</p>
-      ${(p.photos||[]).length?`<div class="gallery">${p.photos.map(u=>`<img src="${u}" alt="">`).join('')}</div>`:''}
-      <div class="meta">${new Date(p.created_at).toLocaleString('fr-FR')}
-        <span class="rating" style=float:right>${stars}</span>
-      </div>
+      <div class="meta">${new Date(p.created_at).toLocaleString('fr-FR')} – 👤 inconnu</div>
+      <p class="rating">${stars}</p>
       <div class="actions">
-        <button onclick="openPost('${p.id}')">Voir / Modifier</button>
+        <button onclick="openPost('${p.id}')">Voir</button>
+        <button class="quitBtn" onclick="history.pushState(null,null,'#home');go()">Quitter</button>
       </div>
     </div>`;
-}
-async function openPost(pid){
-  history.pushState(null,null,`#post?post=${pid}`);
-  go();
-}
+  }
 window.openPost = openPost;
 
 async function showPostDetail(){
@@ -221,11 +218,11 @@ async function showPostDetail(){
       ${(data.photos||[]).length?`<div class="gallery">${data.photos.map(u=>`<img src="${u}" alt="">`).join('')}</div>`:''}
       <div class="meta">Note : ${'★'.repeat(data.rating)}${'☆'.repeat(5-data.rating)}</div>
       <div class="actions">
-        <button id="editBtn">Modifier</button>
-        <button id="delBtn">Supprimer</button>
-        <button id="shareBtn">Partager</button>
+        <button onclick="openEditForm('${data.id}')">Modifier</button>
+        <button onclick="delPost('${data.id}')">Supprimer</button>
+        <button onclick="sharePost('${safeText}')">Partager</button>
         <button class="quitBtn" onclick="history.pushState(null,null,'#home');go()">Quitter</button>
-    </div>
+      </div>
     </div>`;
 
   // branchement des listeners APRÈS injection
@@ -235,7 +232,6 @@ async function showPostDetail(){
     document.getElementById('shareBtn').onclick = () => sharePost(safeText);
   });
 }
-
 /* -------------- CRUD -------------- */
 window.openCreateForm = (themeId) => {
   app.innerHTML=`
