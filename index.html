@@ -259,7 +259,7 @@ button:active{transform:scale(.97)}
 
     // branchement APRÈS injection
     requestAnimationFrame(() => {
-      document.getElementById('createBtn').onclick = () => createPost('${themeId}');
+      document.getElementById('createBtn').onclick = () => createPost(themeId);
     });
   };
 
@@ -285,7 +285,7 @@ button:active{transform:scale(.97)}
           <textarea id="content">${data.content||''}</textarea>
           <input id="rating" type="number" min="1" max="5" value="${data.rating||''}" placeholder="Note /5">
           <div class="actions">
-            <button onclick="updatePost('${id}')">Sauver</button>
+            <button onclick="updatePost(id)">Sauver</button>
             <button onclick="history.back()">Annuler</button>
           </div>
         </div>`;
