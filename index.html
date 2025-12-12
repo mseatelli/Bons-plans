@@ -83,251 +83,247 @@ button:active{transform:scale(.97)}
 
 <script type="module">
   // on masque le bandeau sur l’accueil + on centre la page
-function applyHomeStyle(){
-  if(location.hash===''||location.hash==='#home'){
-    document.body.classList.add('home');
-  }else{
-    document.body.classList.remove('home');
+  function applyHomeStyle(){
+    if(location.hash===''||location.hash==='#home'){
+      document.body.classList.add('home');
+    }else{
+      document.body.classList.remove('home');
+    }
   }
-}
-window.addEventListener('hashchange',applyHomeStyle);
-applyHomeStyle();   // applique dès le départ
-/* -------------- SUPABASE CLIENT ou MOCK -------------- */
-let sb;
-try {
-  const { createClient } = await import('https://cdn.skypack.dev/@supabase/supabase-js');
-  sb = createClient(
-    'https://nqjrnftfkxxtyjlrdcoa.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xanJuZnRma3h4dHlqbHJkY29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExNDk0NDUsImV4cCI6MjA3NjcyNTQ0NX0.k7vGzhpOUNH-jjwo1pXcTSffxPG8U7ZIljcWb0j7k0k'
-  );
-  const { error } = await sb.from('themes').select('id').limit(1);
-  if (error) throw error;
-} catch (e) {
-  console.warn('Supabase injoignable → mode mock', e);
-  sb = mockClient();
-}
+  window.addEventListener('hashchange',applyHomeStyle);
+  applyHomeStyle();   // applique dès le départ
 
-/* -------------- MOCK CLIENT (données figées) -------------- */
-function mockClient() {
-  const fakeThemes = [
-    {id:"926e1e55-ce81-4c93-aa5e-336d3cf462c7", name:"Restaurants"},
-    {id:"abff2425-0c02-46e0-96a7-4c8ccc2ceb35", name:"Activités"},
-    {id:"14c7a05a-67fe-4c8c-a896-7701c7a8ce74", name:"Spectacles"}
-  ];
-  const fakePosts = [
-    {id:"p1",theme_id:"926e1e55-ce81-4c93-aa5e-336d3cf462c7",title:"Ramen du chef",content:"Délicieux bouillon 8h de cuisson",photos:["https://source.unsplash.com/400x300?ramen"],rating:5,author_phone:"+33601020304",created_at:"2025-10-23T18:30:00"},
-    {id:"p2",theme_id:"abff2425-0c02-46e0-96a7-4c8ccc2ceb35",title:"Voie 5c au soleil",content:"Escalade avec vue mer",photos:["https://source.unsplash.com/400x300?climbing"],rating:4,author_phone:"+33605060708",created_at:"2025-10-22T16:15:00"}
-  ];
-  return {
-    from: (table) => ({
-      select: () => ({
-        order: () => Promise.resolve({data: table==='themes' ? fakeThemes : fakePosts, error:null}),
-        eq: (col,val) => ({ single: () => Promise.resolve({data: table==='themes' ? fakeThemes.find(t=>t[col]===val) : fakePosts.find(p=>p[col]===val), error:null}) })
-      }),
-      insert: (p) => Promise.resolve({error:null}),
-      update: (p) => Promise.resolve({error:null}),
-      delete: () => Promise.resolve({error:null})
-    })
+  /* -------------- SUPABASE CLIENT ou MOCK -------------- */
+  let sb;
+  try {
+    const { createClient } = await import('https://cdn.skypack.dev/@supabase/supabase-js');
+    sb = createClient(
+      'https://nqjrnftfkxxtyjlrdcoa.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xanJuZnRma3h4dHlqbHJkY29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExNDk0NDUsImV4cCI6MjA3NjcyNTQ0NX0.k7vGzhpOUNH-jjwo1pXcTSffxPG8U7ZIljcWb0j7k0k'
+    );
+    const { error } = await sb.from('themes').select('id').limit(1);
+    if (error) throw error;
+  } catch (e) {
+    console.warn('Supabase injoignable → mode mock', e);
+    sb = mockClient();
+  }
+
+  /* -------------- MOCK CLIENT (données figées) -------------- */
+  function mockClient() {
+    const fakeThemes = [
+      {id:"926e1e55-ce81-4c93-aa5e-336d3cf462c7", name:"Restaurants"},
+      {id:"abff2425-0c02-46e0-96a7-4c8ccc2ceb35", name:"Activités"},
+      {id:"14c7a05a-67fe-4c8c-a896-7701c7a8ce74", name:"Spectacles"}
+    ];
+    const fakePosts = [
+      {id:"p1",theme_id:"926e1e55-ce81-4c93-aa5e-336d3cf462c7",title:"Ramen du chef",content:"Délicieux bouillon 8h de cuisson",photos:["https://source.unsplash.com/400x300?ramen"],rating:5,author_phone:"+33601020304",created_at:"2025-10-23T18:30:00"},
+      {id:"p2",theme_id:"abff2425-0c02-46e0-96a7-4c8ccc2ceb35",title:"Voie 5c au soleil",content:"Escalade avec vue mer",photos:["https://source.unsplash.com/400x300?climbing"],rating:4,author_phone:"+33605060708",created_at:"2025-10-22T16:15:00"}
+    ];
+    return {
+      from: (table) => ({
+        select: () => ({
+          order: () => Promise.resolve({data: table==='themes' ? fakeThemes : fakePosts, error:null}),
+          eq: (col,val) => ({ single: () => Promise.resolve({data: table==='themes' ? fakeThemes.find(t=>t[col]===val) : fakePosts.find(p=>p[col]===val), error:null}) })
+        }),
+        insert: (p) => Promise.resolve({error:null}),
+        update: (p) => Promise.resolve({error:null}),
+        delete: () => Promise.resolve({error:null})
+      })
+    };
+  }
+
+  /* -------------- ROUTER -------------- */
+  const app = document.getElementById('app');
+  window.addEventListener('click', e => {
+    if (e.target.dataset.route) {
+      e.preventDefault();
+      history.pushState(null, null, '#'+e.target.dataset.route);
+      go();
+    }
+  });
+  window.addEventListener('popstate', go);
+  function go(){ 
+    const [page,qs] = location.hash.slice(1).split('?');
+    routes[page] ? routes[page]() : routes.home();
+  }
+  function qsVal(key){ return new URLSearchParams(location.hash.split('?')[1]).get(key) }
+
+  /* -------------- VUES -------------- */
+  const routes = {
+    home:   () => showHome(),
+    themes: () => showThemes(),
+    posts:  () => showPosts(),
+    post:   () => showPostDetail()
   };
-}
 
-/* -------------- ROUTER -------------- */
-const app = document.getElementById('app');
-window.addEventListener('click', e => {
-  if (e.target.dataset.route) {
-    e.preventDefault();
-    history.pushState(null, null, '#'+e.target.dataset.route);
-    go();
-  }
-});
-window.addEventListener('popstate', go);
-function go(){ 
-  const [page,qs] = location.hash.slice(1).split('?');
-  routes[page] ? routes[page]() : routes.home();
-}
-function qsVal(key){ return new URLSearchParams(location.hash.split('?')[1]).get(key) }
-
-/* -------------- VUES -------------- */
-const routes = {
-  home:   () => showHome(),
-  themes: () => showThemes(),
-  posts:  () => showPosts(),
-  post:   () => showPostDetail()
-};
-
-async function showHome(){
-  document.body.classList.add('home');          // active le centrage + pouce
-  app.innerHTML=`
-    <div class="home-center">
-      <h1>Bons Plans</h1>
-      <p>La communauté des amis</p>
-      <span class="thumb">👍</span>
-      <a href="#" data-route="themes" class="card">Explorer les thèmes</a>
-    </div>`;
-}
-async function showThemes(){
-  app.innerHTML='<div class="loader">Chargement…</div>';
-  const {data,error} = await sb.from('themes').select('*').order('name');
-  if(error){app.innerHTML=`Erreur : ${error.message}`;return;}
-  app.innerHTML = `<h1>Choisissez un thème</h1><div class="list">${data.map(t=>`
-    <a class="card" href="#posts?theme=${t.id}" data-route="posts">
-      <h3>${t.name}</h3>
-    </a>`).join('')}</div>`;
-}
-async function showPosts(){
-  const id = qsVal('theme');
-  app.innerHTML='<div class="loader">Chargement…</div>';
-  const [{data:theme, error:themeErr},{data:posts, error:postsErr}] = await Promise.all([
-    sb.from('themes').select('*').eq('id',id).single(),
-    sb.from('posts').select('*').eq('theme_id',id).order('created_at',{ascending:false})
-  ]);
-  if(themeErr || !theme){ app.innerHTML=`Thème introuvable`; return; }
-  if(postsErr)           { app.innerHTML=`Erreur posts : ${postsErr.message}`; return; }
-  app.innerHTML = `
-    <h1>${theme.name}</h1>
-    <button class="actions" onclick="openCreateForm('${id}')">Créer un post</button>
-    <div class="list">${posts.map(p=>card(p)).join('')}</div>`;
-}
-function card(p){
-  const stars='★'.repeat(p.rating)+'☆'.repeat(5-p.rating);
-  return `
-    <div class="card">
-      <h3>${p.title}</h3>
-      <div class="meta">${new Date(p.created_at).toLocaleString('fr-FR')} – 👤 inconnu</div>
-      <p class="rating">${stars}</p>
-      <div class="actions">
-        <button onclick="openPost('${p.id}')">Voir</button>
-        <button class="quitBtn" onclick="history.pushState(null,null,'#home');go()">Quitter</button>
-      </div>
-    </div>`;
-  }
-window.openPost = openPost;
-
-async function showPostDetail(){
-  const id = qsVal('post');
-  app.innerHTML='<div class="loader">Chargement…</div>';
-  const {data,error} = await sb.from('posts').select('*').eq('id',id).single();
-  if(error){app.innerHTML=`Erreur : ${error.message}`;return;}
-
-  // texte de partage propre
-  const shareLines = [
-    'Nouvelle recommandation',
-    `📍 ${data.title}`,
-    `💬 ${data.content || ''}`,
-    `⭐ Note : ${data.rating}/5`,
-    `🔗 ${window.location.origin}${window.location.hash}`
-  ];
-  const shareText = shareLines.join('\\n');
-  const safeText  = shareText.replace(/'/g, "\\'");
-
-  // injection HTML sans onclick
-  app.innerHTML = `
-    <h1>${data.title}</h1>
-    <div class="card">
-      <p>${data.content||''}</p>
-      ${(data.photos||[]).length?`<div class="gallery">${data.photos.map(u=>`<img src="${u}" alt="">`).join('')}</div>`:''}
-      <div class="meta">Note : ${'★'.repeat(data.rating)}${'☆'.repeat(5-data.rating)}</div>
-      <div class="actions">
-        <button onclick="openEditForm('${data.id}')">Modifier</button>
-        <button onclick="delPost('${data.id}')">Supprimer</button>
-        <button onclick="sharePost('${safeText}')">Partager</button>
-        <button class="quitBtn" onclick="history.pushState(null,null,'#home');go()">Quitter</button>
-      </div>
-    </div>`;
-
-  // branchement des listeners APRÈS injection
-  requestAnimationFrame(() => {
-    document.getElementById('editBtn').onclick  = () => openEditForm(data.id);
-    document.getElementById('delBtn').onclick   = () => delPost(data.id);
-    document.getElementById('shareBtn').onclick = () => sharePost(safeText);
-  });
-}
-/* -------------- CRUD -------------- */
-window.openCreateForm = (themeId) => {
-  app.innerHTML = `
-    <h1>Nouveau post</h1>
-    <div class="card">
-      <input id="title" placeholder="Titre">
-      <textarea id="content" placeholder="Contenu"></textarea>
-      <input id="rating" type="number" min="1" max="5" placeholder="Note /5">
-      <div class="actions">
-        <button id="createBtn" class="actions">Créer un post</button>
-        <button onclick="history.back()">Annuler</button>
-        <button class="quitBtn" onclick="history.pushState(null,null,'#home');go()">Quitter</button>
-      </div>
-    </div>`;
-
-  // branchement APRÈS injection
-  requestAnimationFrame(() => {
-    document.getElementById('createBtn').onclick = () => createPost('${themeId}');
-  });
-};
-
-window.createPost = async (themeId) => {
-  const payload = {
-    theme_id: themeId,
-    title: document.getElementById('title').value,
-    content: document.getElementById('content').value,
-    photos: [],
-    rating: parseInt(document.getElementById('rating').value)||null,
- };
-  const {error} = await sb.from('posts').insert(payload);
-  if(error){alert(error.message);return;}
-  history.back();
-};
-window.openEditForm = (id) => {
-  sb.from('posts').select('*').eq('id',id).single().then(({data,error})=>{
-    if(error){alert(error.message);return;}
+  async function showHome(){
+    document.body.classList.add('home');          // active le centrage + pouce
     app.innerHTML=`
-      <h1>Modifier le post</h1>
+      <div class="home-center">
+        <h1>Bons Plans</h1>
+        <p>La communauté des amis</p>
+        <span class="thumb">👍</span>
+        <a href="#" data-route="themes" class="card">Explorer les thèmes</a>
+      </div>`;
+  }
+  async function showThemes(){
+    app.innerHTML='<div class="loader">Chargement…</div>';
+    const {data,error} = await sb.from('themes').select('*').order('name');
+    if(error){app.innerHTML=`Erreur : ${error.message}`;return;}
+    app.innerHTML = `<h1>Choisissez un thème</h1><div class="list">${data.map(t=>`
+      <a class="card" href="#posts?theme=${t.id}" data-route="posts">
+        <h3>${t.name}</h3>
+      </a>`).join('')}</div>`;
+  }
+  async function showPosts(){
+    const id = qsVal('theme');
+    app.innerHTML='<div class="loader">Chargement…</div>';
+    const [{data:theme, error:themeErr},{data:posts, error:postsErr}] = await Promise.all([
+      sb.from('themes').select('*').eq('id',id).single(),
+      sb.from('posts').select('*').eq('theme_id',id).order('created_at',{ascending:false})
+    ]);
+    if(themeErr || !theme){ app.innerHTML=`Thème introuvable`; return; }
+    if(postsErr)           { app.innerHTML=`Erreur posts : ${postsErr.message}`; return; }
+    app.innerHTML = `
+      <h1>${theme.name}</h1>
+      <button class="actions" onclick="openCreateForm('${id}')">Créer un post</button>
+      <div class="list">${posts.map(p=>card(p)).join('')}</div>`;
+  }
+  function card(p){
+    const stars='★'.repeat(p.rating)+'☆'.repeat(5-p.rating);
+    return `
       <div class="card">
-        <input id="title" value="${data.title}">
-        <textarea id="content">${data.content||''}</textarea>
-        <input id="rating" type="number" min="1" max="5" value="${data.rating||''}" placeholder="Note /5">
+        <h3>${p.title}</h3>
+        <div class="meta">${new Date(p.created_at).toLocaleString('fr-FR')} – 👤 inconnu</div>
+        <p class="rating">${stars}</p>
         <div class="actions">
-          <button onclick="updatePost('${id}')">Sauver</button>
-          <button onclick="history.back()">Annuler</button>
+          <button onclick="openPost('${p.id}')">Voir</button>
+          <button class="quitBtn" onclick="history.pushState(null,null,'#home');go()">Quitter</button>
         </div>
       </div>`;
-  });
-};
-window.updatePost = async (id) => {
-  const payload = {
-    title: document.getElementById('title').value,
-    content: document.getElementById('content').value,
-    rating: parseInt(document.getElementById('rating').value)||null,
-    updated_at: new Date().toISOString()
+    }
+  window.openPost = openPost;
+
+  async function showPostDetail(){
+    const id = qsVal('post');
+    app.innerHTML='<div class="loader">Chargement…</div>';
+    const {data,error} = await sb.from('posts').select('*').eq('id',id).single();
+    if(error){app.innerHTML=`Erreur : ${error.message}`;return;}
+
+    // texte de partage propre
+    const shareLines = [
+      'Nouvelle recommandation',
+      `📍 ${data.title}`,
+      `💬 ${data.content || ''}`,
+      `⭐ Note : ${data.rating}/5`,
+      `🔗 ${window.location.origin}${window.location.hash}`
+    ];
+    const shareText = shareLines.join('\\n');
+    const safeText  = shareText.replace(/'/g, "\\'");
+
+    // injection HTML sans onclick
+    app.innerHTML = `
+      <h1>${data.title}</h1>
+      <div class="card">
+        <p>${data.content||''}</p>
+        ${(data.photos||[]).length?`<div class="gallery">${data.photos.map(u=>`<img src="${u}" alt="">`).join('')}</div>`:''}
+        <div class="meta">Note : ${'★'.repeat(data.rating)}${'☆'.repeat(5-data.rating)}</div>
+        <div class="actions">
+          <button onclick="openEditForm('${data.id}')">Modifier</button>
+          <button onclick="delPost('${data.id}')">Supprimer</button>
+          <button onclick="sharePost('${safeText}')">Partager</button>
+          <button class="quitBtn" onclick="history.pushState(null,null,'#home');go()">Quitter</button>
+        </div>
+      </div>`;
+
+    // branchement des listeners APRÈS injection
+    requestAnimationFrame(() => {
+      document.getElementById('editBtn').onclick  = () => openEditForm(data.id);
+      document.getElementById('delBtn').onclick   = () => delPost(data.id);
+      document.getElementById('shareBtn').onclick = () => sharePost(safeText);
+    });
+  }
+  /* -------------- CRUD -------------- */
+  window.openCreateForm = (themeId) => {
+    app.innerHTML = `
+      <h1>Nouveau post</h1>
+      <div class="card">
+        <input id="title" placeholder="Titre">
+        <textarea id="content" placeholder="Contenu"></textarea>
+        <input id="rating" type="number" min="1" max="5" placeholder="Note /5">
+        <div class="actions">
+          <button id="createBtn" class="actions">Créer un post</button>
+          <button onclick="history.back()">Annuler</button>
+          <button class="quitBtn" onclick="history.pushState(null,null,'#home');go()">Quitter</button>
+        </div>
+      </div>`;
+
+    // branchement APRÈS injection
+    requestAnimationFrame(() => {
+      document.getElementById('createBtn').onclick = () => createPost('${themeId}');
+    });
   };
-  const {error} = await sb.from('posts').update(payload).eq('id',id);
-  if(error){alert(error.message);return;}
-  history.back();
-};
-window.delPost = async (id) => {
-  if(!confirm('Supprimer définitivement ?')) return;
-  const {error} = await sb.from('posts').delete().eq('id',id);
-  if(error){alert(error.message);return;}
-  history.back();
-};
-window.sharePost = (text) => {
-  if(navigator.share) navigator.share({title:'Bons Plans – La communauté des amis', text});
-  else {navigator.clipboard.writeText(text); alert('Lien copié !');}
-};
-window.sharePost = sharePost;
- 
-/* -------------- INITIAL -------------- */
+
+  window.createPost = async (themeId) => {
+    const payload = {
+      theme_id: themeId,
+      title: document.getElementById('title').value,
+      content: document.getElementById('content').value,
+      photos: [],
+      rating: parseInt(document.getElementById('rating').value)||null,
+   };
+    const {error} = await sb.from('posts').insert(payload);
+    if(error){alert(error.message);return;}
+    history.back();
+  };
+  window.openEditForm = (id) => {
+    sb.from('posts').select('*').eq('id',id).single().then(({data,error})=>{
+      if(error){alert(error.message);return;}
+      app.innerHTML=`
+        <h1>Modifier le post</h1>
+        <div class="card">
+          <input id="title" value="${data.title}">
+          <textarea id="content">${data.content||''}</textarea>
+          <input id="rating" type="number" min="1" max="5" value="${data.rating||''}" placeholder="Note /5">
+          <div class="actions">
+            <button onclick="updatePost('${id}')">Sauver</button>
+            <button onclick="history.back()">Annuler</button>
+          </div>
+        </div>`;
+    });
+  };
+  window.updatePost = async (id) => {
+    const payload = {
+      title: document.getElementById('title').value,
+      content: document.getElementById('content').value,
+      rating: parseInt(document.getElementById('rating').value)||null,
+      updated_at: new Date().toISOString()
+    };
+    const {error} = await sb.from('posts').update(payload).eq('id',id);
+    if(error){alert(error.message);return;}
+    history.back();
+  };
+  window.delPost = async (id) => {
+    if(!confirm('Supprimer définitivement ?')) return;
+    const {error} = await sb.from('posts').delete().eq('id',id);
+    if(error){alert(error.message);return;}
+    history.back();
+  };
+  window.sharePost = (text) => {
+    if(navigator.share) navigator.share({title:'Bons Plans – La communauté des amis', text});
+    else {navigator.clipboard.writeText(text); alert('Lien copié !');}
+  };
+
+  /* exposer les fonctions au global */
+  window.openPost   = openPost;
+  window.openCreateForm = openCreateForm;
+  window.openEditForm = openEditForm;
+  window.delPost    = delPost;
+  window.sharePost  = sharePost;
+
+  /* -------------- INITIAL -------------- */
+  go();
 </script>
-    <!-- ton gros script module (déjà présent) -->
-  <script type="module">
-    /* tout ton JS ici */
-    
-   /* exposer les fonctions au global */
-window.openPost   = openPost;
-window.openCreateForm = openCreateForm;
-window.openEditForm = openEditForm;
-window.delPost    = delPost;
-window.sharePost  = sharePost;
-go();
-  </script>
 
   <!-- BOUTON + SCRIPT DU TOGGLE (à ajouter) -->
   <button id="themeToggle" title="Thème clair/sombre">🌓</button>
