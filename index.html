@@ -236,8 +236,7 @@ async function showPostDetail(){
     </div>`;
 
   // branchement des listeners APRÈS injection
-   // on attend que le HTML soit dans le DOM
-   requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
     document.getElementById('editBtn').onclick  = () => openEditForm(data.id);
     document.getElementById('delBtn').onclick   = () => delPost(data.id);
     document.getElementById('shareBtn').onclick = () => sharePost(safeText);
