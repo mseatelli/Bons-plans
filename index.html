@@ -202,8 +202,7 @@ button:active{transform:scale(.97)}
         </div>
       </div>`;
     }
-  window.openPost = openPost;
-
+  
   async function showPostDetail(){
     const id = qsVal('post');
     app.innerHTML='<div class="loader">Chargement…</div>';
@@ -320,7 +319,8 @@ button:active{transform:scale(.97)}
   window.openEditForm = openEditForm;
   window.delPost    = delPost;
   window.sharePost  = sharePost;
-
+  window.openPost = openPost;
+  
   /* -------------- INITIAL -------------- */
   go();
 </script>
